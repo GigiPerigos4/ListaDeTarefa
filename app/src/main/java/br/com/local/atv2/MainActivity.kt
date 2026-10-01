@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -29,6 +31,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,17 +90,20 @@ fun Tela(){
 
         Button(
             onClick = {
+                if (tarefas.isNotBlank()) {
                     listaTarefas.add(
                         Tarefa(
-                            id = contadorId,
+                            id = contadorId++,
                             titulo = tarefas,
-                            data = datas
+                            data = if (datas.isBlank()) "Sem data" else datas
                         )
                     )
-                tarefas = ""
-                datas = ""
-            }
-        ){
+                    tarefas = ""
+                    datas = ""
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Adicionar Tarefa")
         }
 
@@ -105,7 +111,7 @@ fun Tela(){
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-        ){
+        ) {
             if (listaTarefas.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -113,8 +119,21 @@ fun Tela(){
                 ) {
                     Text("Nenhuma tarefa adicionada ainda.")
                 }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    items(listaTarefas) { tarefa ->
+                        Text(
+                            text = "${tarefa.titulo} - ${tarefa.data}",
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
             }
         }
-
     }
 }
