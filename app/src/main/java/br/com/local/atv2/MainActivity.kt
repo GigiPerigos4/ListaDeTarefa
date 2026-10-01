@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,8 @@ import br.com.local.atv2.ui.theme.Atv2Theme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.Alignment
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,11 +42,19 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+data class Tarefa(
+    val id: Int,
+    val titulo: String,
+    val data: String,
+    var concluida: Boolean = false
+)
+
 @Composable
 fun Tela(){
     var tarefas by remember {mutableStateOf("")}
     var datas by remember {mutableStateOf("")}
-    var listaTarefas by remember {mutableStateOf("")}
+    val listaTarefas = remember {mutableStateListOf<Tarefa>()}
+    var contadorId by remember {mutableStateOf(1)}
 
     Column(
         modifier = Modifier
@@ -75,13 +86,35 @@ fun Tela(){
         )
 
         Button(
-            onClick = TODO(),
-            content = TODO()
-        )
+            onClick = {
+                    listaTarefas.add(
+                        Tarefa(
+                            id = contadorId,
+                            titulo = tarefas,
+                            data = datas
+                        )
+                    )
+                tarefas = ""
+                datas = ""
+            }
+        ){
+            Text("Adicionar Tarefa")
+        }
 
         Card(
-            content = TODO()
-        )
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ){
+            if (listaTarefas.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Nenhuma tarefa adicionada ainda.")
+                }
+            }
+        }
 
     }
 }
